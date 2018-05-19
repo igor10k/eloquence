@@ -5,14 +5,6 @@ import { TranslationsConsumer } from '../contexts/translations'
 import { ThemeConsumer } from '../contexts/theme'
 
 class TranslateField extends React.Component {
-  state = {
-    text: ''
-  }
-
-  handleTextChange = (text) => {
-    this.setState({ text })
-  }
-
   render () {
     return (
       <ThemeConsumer>
@@ -25,16 +17,16 @@ class TranslateField extends React.Component {
 
           return (
             <TranslationsConsumer>
-              {({ fetchTranslations }) =>
+              {({ fetchTranslations, word, setWord }) =>
                 <TextInput
                   placeholder='Tap to type...'
                   style={[styles.input, theme.input]}
                   clearButtonMode='while-editing'
                   autoCapitalize='none'
                   enablesReturnKeyAutomatically
-                  onSubmitEditing={() => fetchTranslations(this.state.text)}
-                  onChangeText={this.handleTextChange}
-                  value={this.state.text}
+                  onSubmitEditing={() => fetchTranslations(word)}
+                  onChangeText={setWord}
+                  value={word}
                   placeholderTextColor={colors.placeholder}
                 />
               }

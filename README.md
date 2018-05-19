@@ -13,7 +13,7 @@ Built using [React Native](https://facebook.github.io/react-native/).
 ### Install on iOS
 
 * Download [Cydia Impactor](http://www.cydiaimpactor.com) (no jailbreak required)
-* Download the [latest Eloquence release](https://github.com/Igor10k/eloquence/releases/download/v1.0.0/Eloquence.ipa) and unpack it
+* Download the [latest Eloquence release](https://github.com/Igor10k/eloquence/releases/download/v1.1.0/Eloquence.ipa) and unpack it
 * Connect your mobile device to your Mac
 * Open Cydia Impactor and choose in the menu `Device -> Install package` and select the `Eloquence.ipa` file.
   _If you have two-factor auth enabled for your Apple ID (and you should!) then go to http://appleid.apple.com/, sign in and in the Security section generate an app-specific password to use when installing the app using Cydia Impactor_

@@ -6,12 +6,15 @@ import { fetchTranslationsData } from '../helpers/backend'
 const initialState = {
   initialized: false,
   isFetching: false,
-  entities: null,
+  word: '',
+  translations: null,
+  corrections: null,
   language: 'en',
   error: null,
 
   fetchTranslations: () => {},
-  setLanguage: () => {}
+  setLanguage: () => {},
+  setWord: () => {}
 }
 
 export const TranslationsContext = React.createContext(initialState)
@@ -21,10 +24,10 @@ export class TranslationsProvider extends React.Component {
     ...initialState,
 
     fetchTranslations: (word) => {
-      this.setState({ isFetching: true })
+      this.setState({ isFetching: true, word })
 
-      fetchTranslationsData(word, this.state.language).then(entities => {
-        this.setState({ isFetching: false, entities })
+      fetchTranslationsData(word, this.state.language).then(data => {
+        this.setState({ isFetching: false, translations: null, corrections: null, ...data })
       }).catch(error => {
         this.setState({ isFetching: false, error })
       })
@@ -34,6 +37,12 @@ export class TranslationsProvider extends React.Component {
       this.setState({ language })
 
       this.persistLanguage(language)
+    },
+
+    setWord: (word) => {
+      if (this.state.word !== word) {
+        this.setState({ word })
+      }
     }
   }
 

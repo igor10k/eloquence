@@ -3,12 +3,7 @@ import cheerio from 'cheerio-without-node-native'
 
 const API_URL = 'https://www.multitran.ru/c/m.exe'
 
-function parseResponse (response) {
-  const $ = cheerio.load(response)
-
-  const tables = $('#translation ~ table')
-  const rows = $('> tr', tables.eq(0))
-
+function buildTranslations ($, rows) {
   const result = []
   let current = -1
 
@@ -30,8 +25,31 @@ function parseResponse (response) {
     }
   })
 
-  return result
+  return {
+    translations: result
+  }
 }
+
+function buildCorrections ($, row) {
+  return {
+    corrections: $('td', row).eq(1).text().trim().split('; ')
+  }
+}
+
+function parseResponse (response) {
+  const $ = cheerio.load(response)
+
+  const table = $('a[name="phrases"]').prev()
+  const rows = $('> tr', table)
+
+  if (rows.length === 1) {
+    return buildCorrections($, rows)
+  } else {
+    return buildTranslations($, rows)
+  }
+}
+
+let xhr
 
 export function fetchTranslationsData (word, lang) {
   const languagesMap = {
@@ -42,14 +60,20 @@ export function fetchTranslationsData (word, lang) {
     it: 23
   }
 
+  if (xhr) {
+    xhr.abort()
+  }
+
   return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest()
+    xhr = new XMLHttpRequest()
     xhr.addEventListener('load', function () {
       resolve(parseResponse(xhr.responseText))
+      xhr = null
     })
 
     xhr.addEventListener('error', function () {
       reject(new Error(xhr.responseText))
+      xhr = null
     })
 
     xhr.open('GET', `${API_URL}?s=${word}&l1=${languagesMap[lang]}`)
